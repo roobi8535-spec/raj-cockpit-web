@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Raj Cockpit Pro - Lifetime Unlock</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #0b0f19; color: #fff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+    .card { background: #141b2d; border: 1px solid #26314d; border-radius: 16px; padding: 24px; max-width: 380px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    h2 { margin: 0 0 6px; color: #38bdf8; }
+    .price { font-size: 36px; font-weight: 800; margin: 12px 0; color: #22c55e; }
+    .device-box { background: #0b0f19; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 13px; color: #94a3b8; margin-bottom: 18px; word-break: break-all; }
+    button { width: 100%; padding: 14px; font-size: 16px; font-weight: 700; border: none; border-radius: 10px; background: #2563eb; color: #fff; cursor: pointer; }
+    button:active { transform: scale(0.98); }
+    #status { margin-top: 16px; font-size: 15px; color: #fbbf24; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Raj Cockpit Pro</h2>
+    <p style="color:#cbd5e1;font-size:14px;">Lifetime Car Dashboard License</p>
+    <div class="price">₹200</div>
+    <div class="device-box">Hardware ID: <span id="devId">LOADING...</span></div>
+    <button id="payBtn" onclick="startPayment()">Pay ₹200 &amp; Unlock</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const deviceId = (params.get("device_id") || "").replace(/[^a-zA-Z0-9_-]/g, "");
+    document.getElementById("devId").innerText = deviceId || "INVALID_ID";
+
+    if (deviceId.length < 6) {
+      document.getElementById("payBtn").disabled = true;
+      document.getElementById("payBtn").style.background = "#475569";
+      document.getElementById("status").innerText = "Please scan QR directly from your car stereo screen.";
+    }
+
+    function startPayment() {
+      const options = {
+        key: "rzp_test_U3GzYEOyTqEiqP", // <-- Yahan apni Test API Key paste karein
+        amount: 20000,
+        currency: "INR",
+        name: "Raj Cockpit Pro",
+        description: "Lifetime License",
+        notes: { device_id: deviceId },
+        handler: function () {
+          document.getElementById("payBtn").style.display = "none";
+          document.getElementById("status").innerText = "Payment Verified! Aapki car stereo screen 5 second mein apne aap unlock ho jayegi.";
+        },
+        theme: { color: "#2563eb" }
+      };
+      new Razorpay(options).open();
+    }
+  </script>
+</body>
+</html>
